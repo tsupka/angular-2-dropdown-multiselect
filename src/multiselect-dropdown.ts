@@ -40,7 +40,7 @@ export interface IMultiSelectOption {
 export interface IMultiSelectSettings {
   pullRight?: boolean;
   enableSearch?: boolean;
-  checkedStyle?: 'checkboxes' | 'glyphicon' | 'fontawesome';
+  checkedStyle?: 'checkboxes' | 'custom' | 'glyphicon' | 'fontawesome';
   buttonClasses?: string;
   itemClasses?: string;
   selectionLimit?: number;
@@ -108,7 +108,7 @@ export class MultiSelectSearchFilter implements PipeTransform {
         <li class="dropdown-item check-control check-control-check" *ngIf="settings.showCheckAll">
           <a href="javascript:;" role="menuitem" tabindex="-1" (click)="checkAll()">
             <span style="width: 16px;"
-              [ngClass]="{'glyphicon glyphicon-ok': settings.checkedStyle !== 'fontawesome',
+                  [ngClass]="{'glyphicon glyphicon-ok': settings.checkedStyle !== 'fontawesome',
               'fa fa-check': settings.checkedStyle === 'fontawesome'}"></span>
             {{ texts.checkAll }}
           </a>
@@ -116,7 +116,7 @@ export class MultiSelectSearchFilter implements PipeTransform {
         <li class="dropdown-item check-control check-control-uncheck" *ngIf="settings.showUncheckAll">
           <a href="javascript:;" role="menuitem" tabindex="-1" (click)="uncheckAll()">
             <span style="width: 16px;"
-              [ngClass]="{'glyphicon glyphicon-remove': settings.checkedStyle !== 'fontawesome',
+                  [ngClass]="{'glyphicon glyphicon-remove': settings.checkedStyle !== 'fontawesome',
               'fa fa-times': settings.checkedStyle === 'fontawesome'}"></span>
             {{ texts.uncheckAll }}
           </a>
@@ -128,8 +128,15 @@ export class MultiSelectSearchFilter implements PipeTransform {
             {{ option.name }}
           </ng-template>
           <a *ngIf="!option.isLabel" href="javascript:;" role="menuitem" tabindex="-1">
+
             <input *ngIf="settings.checkedStyle === 'checkboxes'" type="checkbox"
-              [checked]="isSelected(option)" (click)="preventCheckboxCheck($event, option)"/>
+                   [checked]="isSelected(option)" (click)="preventCheckboxCheck($event, option)"/>
+
+            <label class="custom-control custom-checkbox" *ngIf="settings.checkedStyle === 'custom'" >
+              <input class="custom-control-input" type="checkbox" [checked]="isSelected(option)" (click)="preventCheckboxCheck($event, option)">
+              <span class="custom-control-indicator"></span>
+            </label>
+
             <span *ngIf="settings.checkedStyle === 'glyphicon'" style="width: 16px;"
                   class="glyphicon" [class.glyphicon-ok]="isSelected(option)"></span>
             <span *ngIf="settings.checkedStyle === 'fontawesome'" style="width: 16px;display: inline-block;">
