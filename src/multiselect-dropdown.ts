@@ -132,7 +132,7 @@ export class MultiSelectSearchFilter implements PipeTransform {
                    [checked]="isSelected(option)" (click)="preventCheckboxCheck($event, option)"/>
 
             <label class="custom-control custom-checkbox" *ngIf="settings.checkedStyle === 'custom'" >
-              <input class="custom-control-input" type="checkbox" [checked]="isSelected(option)" (click)="preventCheckboxCheck($event, option)">
+              <input class="custom-control-input" type="checkbox" [checked]="isSelected(option)" (click)="!option.isLabel && setSelected($event, option)">
               <span class="custom-control-indicator"></span>
             </label>
 
