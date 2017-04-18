@@ -113,15 +113,18 @@ export class MultiSelectSearchFilter implements PipeTransform {
             {{ texts.checkAll }}
           </a>
         </li>
+
         <li class="dropdown-item check-control check-control-uncheck" *ngIf="settings.showUncheckAll">
           <a href="javascript:;" role="menuitem" tabindex="-1" (click)="uncheckAll()">
             <span style="width: 16px;"
                   [ngClass]="{'glyphicon glyphicon-remove': settings.checkedStyle !== 'fontawesome',
-              'fa fa-times': settings.checkedStyle === 'fontawesome'}"></span>
-            {{ texts.uncheckAll }}
+              'fa fa-times': settings.checkedStyle === 'fontawesome',
+              'fa fa-times': settings.checkedStyle === 'custom'}"></span>
+            Zrušit výběr
           </a>
         </li>
-        <li *ngIf="settings.showCheckAll || settings.showUncheckAll" class="dropdown-divider divider"></li>
+
+        <li *ngIf="settings.showCheckAll" class="dropdown-divider divider"></li>
         <li class="dropdown-item" [ngStyle]="getItemStyle(option)" *ngFor="let option of options | searchFilter:searchFilterText"
             (click)="!option.isLabel && setSelected($event, option)" [class.dropdown-header]="option.isLabel">
           <ng-template [ngIf]="option.isLabel">
@@ -133,7 +136,7 @@ export class MultiSelectSearchFilter implements PipeTransform {
                    [checked]="isSelected(option)" (click)="preventCheckboxCheck($event, option)"/>
 
             <label class="custom-control custom-checkbox" *ngIf="settings.checkedStyle === 'custom'" >
-              <input class="custom-control-input" type="checkbox" [checked]="isSelected(option)" (click)="preventCheckboxCheck($event, option)">
+              <input class="custom-control-input" type="checkbox" [checked]="isSelected(option)" (click)="!option.isLabel && setSelected($event, option)">
               <span class="custom-control-indicator"></span>
             </label>
 
@@ -148,6 +151,9 @@ export class MultiSelectSearchFilter implements PipeTransform {
           </a>
         </li>
       </ul>
+    </div>
+    <div ngStyle="" class="form-control-feedback" *ngIf="settings.showUncheckAll && model?.length>0">
+      <span class="link-custom" (click)="uncheckAll()"><i class="fa fa-times"></i> Zrušit výběr</span>
     </div>
   `
 })
@@ -176,7 +182,7 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
     }
   }
 
-  model: number[];
+  model: number[] = [];
   title: string;
   differ: any;
   numSelected: number = 0;
@@ -310,6 +316,7 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
     }
     this.onModelChange(this.model);
     this.onModelTouched();
+
   }
 
   updateNumSelected() {
