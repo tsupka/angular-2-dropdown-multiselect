@@ -48,7 +48,6 @@ export interface IMultiSelectSettings {
   autoUnselect?: boolean;
   showCheckAll?: boolean;
   showUncheckAll?: boolean;
-  dynamicTitle?: boolean;
   dynamicTitleMaxItems?: number;
   maxHeight?: string;
   displayAllSelectedText?: boolean;
@@ -127,9 +126,9 @@ export class MultiSelectSearchFilter implements PipeTransform {
         <li *ngIf="settings.showCheckAll" class="dropdown-divider divider"></li>
         <li class="dropdown-item" [ngStyle]="getItemStyle(option)" *ngFor="let option of options | searchFilter:searchFilterText"
             (click)="!option.isLabel && setSelected($event, option)" [class.dropdown-header]="option.isLabel">
-          <ng-template [ngIf]="option.isLabel">
+          <template [ngIf]="option.isLabel">
             {{ option.name }}
-          </ng-template>
+          </template>
           <a *ngIf="!option.isLabel" href="javascript:;" role="menuitem" tabindex="-1">
 
             <input *ngIf="settings.checkedStyle === 'checkboxes'" type="checkbox"
@@ -199,7 +198,6 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
     autoUnselect: false,
     showCheckAll: false,
     showUncheckAll: false,
-    dynamicTitle: true,
     dynamicTitleMaxItems: 3,
     maxHeight: '300px',
   };
@@ -324,7 +322,7 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
   }
 
   updateTitle() {
-    if (this.numSelected === 0 || !this.settings.dynamicTitle) {
+    if (this.numSelected === 0) {
       this.title = this.texts.defaultTitle || '';
     } else if (this.settings.dynamicTitleMaxItems && this.settings.dynamicTitleMaxItems >= this.numSelected) {
       this.title = this.options
