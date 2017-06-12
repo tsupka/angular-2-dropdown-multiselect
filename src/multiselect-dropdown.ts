@@ -104,26 +104,24 @@ export class MultiSelectSearchFilter implements PipeTransform {
           </div>
         </li>
         <li class="dropdown-divider divider" *ngIf="settings.enableSearch"></li>
-        <li class="dropdown-item check-control check-control-check" *ngIf="settings.showCheckAll">
-          <a href="javascript:;" role="menuitem" tabindex="-1" (click)="checkAll()">
+
+        <li class="dropdown-item check-control check-control-uncheck" *ngIf="settings.showUncheckAll || settings.showCheckAll">
+          <a *ngIf="settings.showUncheckAll" href="javascript:;" role="menuitem" tabindex="-1" (click)="uncheckAll()">
             <span style="width: 16px;"
-                  [ngClass]="{'glyphicon glyphicon-ok': settings.checkedStyle !== 'fontawesome',
-              'fa fa-check': settings.checkedStyle === 'fontawesome'}"></span>
+                  [ngClass]="{'glyphicon glyphicon-remove': settings.checkedStyle !== 'fontawesome' && settings.checkedStyle !== 'custom',
+              'fa fa-times': settings.checkedStyle === 'fontawesome',
+              'fa fa-times': settings.checkedStyle === 'custom'}"></span>
+            {{ texts.uncheckAll }}
+          </a>
+          <a *ngIf="settings.showCheckAll" href="javascript:;" role="menuitem" tabindex="-1" [ngStyle]="{'float': settings.showUncheckAll ? 'right' : 'none'}" (click)="checkAll()">
+            <span style="width: 16px"
+                  [ngClass]="{'glyphicon glyphicon-ok': settings.checkedStyle !== 'fontawesome' && settings.checkedStyle !== 'custom',
+              'fa fa-times': settings.checkedStyle === 'fontawesome',
+              'fa fa-check': settings.checkedStyle === 'custom'}"></span>
             {{ texts.checkAll }}
           </a>
         </li>
 
-        <li class="dropdown-item check-control check-control-uncheck" *ngIf="settings.showUncheckAll">
-          <a href="javascript:;" role="menuitem" tabindex="-1" (click)="uncheckAll()">
-            <span style="width: 16px;"
-                  [ngClass]="{'glyphicon glyphicon-remove': settings.checkedStyle !== 'fontawesome',
-              'fa fa-times': settings.checkedStyle === 'fontawesome',
-              'fa fa-times': settings.checkedStyle === 'custom'}"></span>
-            Zrušit výběr
-          </a>
-        </li>
-
-        <li *ngIf="settings.showCheckAll" class="dropdown-divider divider"></li>
         <li class="dropdown-item" [ngStyle]="getItemStyle(option)" *ngFor="let option of options | searchFilter:searchFilterText"
             (click)="!option.isLabel && setSelected($event, option)" [class.dropdown-header]="option.isLabel">
           <template [ngIf]="option.isLabel">
@@ -150,9 +148,6 @@ export class MultiSelectSearchFilter implements PipeTransform {
           </a>
         </li>
       </ul>
-    </div>
-    <div ngStyle="" class="form-control-feedback" *ngIf="settings.showUncheckAll && model?.length>0">
-      <span class="link-custom" (click)="uncheckAll()"><i class="fa fa-times"></i> Zrušit výběr</span>
     </div>
   `
 })
@@ -341,6 +336,7 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
   }
 
   checkAll() {
+    this.model = this.model || [];
     this.model = this.options
       .map((option: IMultiSelectOption) => {
         if (this.model.indexOf(option.id) === -1) {
