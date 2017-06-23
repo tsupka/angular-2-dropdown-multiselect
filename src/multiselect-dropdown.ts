@@ -86,24 +86,18 @@ export class MultiSelectSearchFilter implements PipeTransform {
     a {
       outline: none !important;
     }
+    .visible-dropdown .dropdown-toggle{
+    display:none;
+    }
   `],
   template: `
-    <div class="dropdown">
+    <div class="dropdown" [ngClass]="{'visible-dropdown':isVisible}">
       <button type="button" class="dropdown-toggle" [ngClass]="settings.buttonClasses"
               (click)="toggleDropdown()" [disabled]="disabled">{{ title }}&nbsp;<span class="caret"></span></button>
+      <input *ngIf="settings.enableSearch && isVisible" type="text" class="form-control" placeholder="{{ texts.searchPlaceholder }}"
+                   aria-describedby="sizing-addon3" [(ngModel)]="searchFilterText" [ngModelOptions]="{standalone: true}">
       <ul *ngIf="isVisible" class="dropdown-menu" [class.pull-right]="settings.pullRight" [class.dropdown-menu-right]="settings.pullRight"
           [style.max-height]="settings.maxHeight" style="display: block; height: auto; overflow-y: auto;">
-        <li class="dropdown-item search" *ngIf="settings.enableSearch">
-          <div class="input-group input-group-sm">
-            <span class="input-group-addon" id="sizing-addon3"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" placeholder="{{ texts.searchPlaceholder }}"
-                   aria-describedby="sizing-addon3" [(ngModel)]="searchFilterText" [ngModelOptions]="{standalone: true}">
-            <span class="input-group-btn" *ngIf="searchFilterText.length > 0">
-  			    <button class="btn btn-default btn-secondary" type="button" (click)="clearSearch($event)"><i class="fa fa-times"></i></button>
-	          </span>
-          </div>
-        </li>
-        <li class="dropdown-divider divider" *ngIf="settings.enableSearch"></li>
 
         <li class="dropdown-item check-control check-control-uncheck" *ngIf="settings.showUncheckAll || settings.showCheckAll">
           <a *ngIf="settings.showUncheckAll" href="javascript:;" role="menuitem" tabindex="-1" (click)="uncheckAll()">
@@ -173,6 +167,7 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
     if (!parentFound) {
       this.isVisible = false;
       this.dropdownClosed.emit();
+      this.clearSearch();
     }
   }
 
@@ -264,8 +259,8 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
     throw new Error('Method not implemented.');
   }
 
-  clearSearch(event: Event) {
-    event.stopPropagation();
+  clearSearch(event?: Event) {
+    if(event) event.stopPropagation();
     this.searchFilterText = '';
   }
 
@@ -273,6 +268,7 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
     this.isVisible = !this.isVisible;
     if (!this.isVisible) {
       this.dropdownClosed.emit();
+      this.clearSearch();
     }
   }
 
