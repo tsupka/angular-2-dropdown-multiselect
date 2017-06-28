@@ -266,10 +266,21 @@ export class MultiselectDropdown implements OnInit, DoCheck, ControlValueAccesso
 
   toggleDropdown() {
     this.isVisible = !this.isVisible;
-    if (!this.isVisible) {
+    if (this.isVisible) {
+      this.focusToInput();
+    }else{
       this.dropdownClosed.emit();
       this.clearSearch();
     }
+  }
+
+  focusToInput():void {
+    setTimeout(() => {
+      let el = this.element.nativeElement.querySelector('div.dropdown > input');
+      if (el) {
+        el.focus();
+      }
+    }, 0);
   }
 
   isSelected(option: IMultiSelectOption): boolean {
