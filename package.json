@@ -5,7 +5,7 @@
   "main": "src/multiselect-dropdown.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/softsimon/angular-2-dropdown-multiselect.git"
+    "url": "https://github.com/softsimon/angular-2-dropdown-multiselect.git"
   },
   "keywords": [
     "angular 2",
